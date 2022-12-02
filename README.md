@@ -1,2 +1,2 @@
-# Portfolio-One
-My Portfolio - Project One
+# crazylazylife.github.io
+My website and blog

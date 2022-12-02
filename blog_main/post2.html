@@ -1,0 +1,207 @@
+
+<!DOCTYPE HTML>
+<html>
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+<title>CrazyLazyLife - Blog</title>
+<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+<link href="css/style.css" rel='stylesheet' type='text/css' />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="face detection siamese network one shot learning trpliet loss function" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<link href='http://fonts.googleapis.com/css?family=Oswald:100,400,300,700' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,300italic' rel='stylesheet' type='text/css'>
+<script src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/move-top.js"></script>
+<script type="text/javascript" src="js/easing.js"></script>
+
+<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$(".scroll").click(function(event){
+					event.preventDefault();
+					$('html,body').animate({scrollTop:$(this.hash).offset().top},900);
+				});
+			});
+</script>
+
+</head>
+<body>
+<script src='../../../../ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script><script src="../../../../m.servedby-buysellads.com/monetization.js" type="text/javascript"></script>
+<script>
+(function(){
+	if(typeof _bsa !== 'undefined' && _bsa) {
+  		_bsa.init('flexbar', 'CKYI627U', 'placement:w3layoutscom');
+  	}
+})();
+</script>
+<script>
+(function(){
+if(typeof _bsa !== 'undefined' && _bsa) {
+	_bsa.init('fancybar', 'CKYDL2JN', 'placement:demo');
+}
+})();
+</script>
+<script>
+(function(){
+	if(typeof _bsa !== 'undefined' && _bsa) {
+  		_bsa.init('stickybox', 'CKYI653J', 'placement:w3layoutscom');
+  	}
+})();
+</script>
+<body>
+
+<div class="header">
+	 <div class="container">
+		  <div class="logo">
+			  <a href="blog_index.html"><img src="images/logo.jpg" title="" /></a>
+		  </div>
+
+			 <div class="top-menu">
+				 <div class="search">
+					 <form>
+					 <input type="text" placeholder="" required="">
+					 <input type="submit" value=""/>
+					 </form>
+				 </div>
+				  <span class="menu"> </span>
+				   <ul>
+						<li class="active"><a href="blog_index.html">HOME</a></li>
+						<li><a href="../index.html">MAIN</a></li>
+						<div class="clearfix"> </div>
+				 </ul>
+			 </div>
+			 <div class="clearfix"></div>
+					<script>
+					$("span.menu").click(function(){
+					$(".top-menu ul").slideToggle("slow" , function(){
+					});
+					});
+					</script>
+
+	 </div>
+</div>
+
+<div class="single">
+	 <div class="container">
+		  <div class="col-md-8 single-main">
+			  <div class="single-grid">
+					<img src="https://s3.ap-south-1.amazonaws.com/cms-abp-prod-media/library/THE_TELEGRAPH/mig/media/images/2018/01/15/face.jpg" alt=""/>
+					<p>
+            Hello Coders,
+<br>
+I was browsing through the news, in an app called <em>CONVERGE</em>, a few days back and one of the news caught my attention. It was regarding the application of deep learning architectures to recognizes faces in street-cam footage of some country. Its fascinating, how from millions or billions of people, the intelligent devices are able to recognize faces in real-time. In this post, I am going to talk about face verification using one-shot learning in the Siamese network, being applied successfully to implement this in various companies.
+<br>
+(The featured image was just a random search result. Please don't sue me. )
+<br><br>
+<span style="font-size: 20px; color: black;">The Problem with Traditional ConvNet:</span>
+<br>
+Generally, the training of any neural network architectures requires a large no. of instances of a particular input. But, say you want to develop a face recognition software for the student database of your institution. In that case, you have only one image of each student in the database. So, the general process of training the convolutional neural network for each image, only once, won’t be a good training and would lead to faulty results. Thus, we need a better algorithm that can learn from a database containing the pictures of each candidate only once, kind-of like our brain, which remembers a person after seeing them only once (or sometimes twice). To overcome this problem, researchers came up with the following algorithm:
+<br><br><span style="text-decoration:underline; font-size: 25px; color: black;">One Shot Learning:</span><br>
+So, suppose, we have a database of say <b>N</b> people. Now a simple ConvNet with regular architecture ending with a softmax classifier for <strong>N+1</strong> output (N output denoting each entry and another one denoting ‘none-of-the-above’), will result in a poorly trained architecture. Moreover, with the  addition of new people, the  networks needs to be trained again over the whole database, in order to account for the changes.
+<br>
+The alternative way of tackling this problem is that, instead to training the network to output a probability for each of the N persons, we output a parameter, defining the degree of difference between two pairs of image chosen from the database. Let us denote this parameter as<strong> <em>d(img_A, img_B)</em></strong>.
+<br>
+We, determine an hyperparameter <strong>λ</strong>, such that, if:
+<br>
+	<span style="padding-left: 25px; font-size: 18px; color: black;"><strong><em>d(img_A, img_B)</em> > λ</strong></span>, implies that the images under consideration are of different people.<br>
+	<span style="padding-left: 25px; font-size: 18px; color: black;"><strong><em>d(img_A, img_B)</em> ≤ λ</strong></span>, implies that they are the images of same person.
+<br>
+In order to implement this technique, we use <em>Siamese Network.</em>
+<br>
+<br><span style="text-decoration:underline;font-size: 25px; color: black;">Siamese Network:</span><br>
+Siamese Network is a different class of Neural Network that is made up of two or more identical sub-networks. These sub-networks are termed identical, because they are similar in terms of all the hyper-parameters, learnable parameters and layout.
+<br>
+<img class="alignnone size-full wp-image-1277" src="https://ai2-s2-public.s3.amazonaws.com/figures/2017-08-08/62a97ac04e742ad1513cf164760e4d6a25d93203/4-Figure2-1.png" alt="siamese_network" width="540" height="457" />
+<br>
+As from the above picture, we find two convnet, similar in structure, ending with a layer of some no. of nodes (say <strong>K</strong>). We say, the output available from this layer, i.e., the values of each node of the last layer is the <strong><em>encoding of the input image</em></strong>, denoted by <em><strong>f(image).</strong></em>
+<br>
+Thus, two different images, should have different “<em>encodings</em>”. So, the next job is to find the <strong><em>degree of difference</em></strong>, i.e, <strong><em>d</em><em>(img_A, img_B)</em></strong>. We define it as:
+<br>
+<span style="font-size: 18px; color: black;"><strong><em>d</em><em>(img_A, img_B) = </em><em>|| </em><em>f (img_A) - f(img_B) ||<sup>2</sup></em></strong></span>
+<br>
+It is the square of norm of the difference between the <em>encodings</em> of <strong>Img_A</strong> and <strong>Img_B</strong>. Now, that we have the parameter, that is to be adjusted throughout the training image, we can  define our goal of learning as:
+
+	<span style="padding-left: 25px;">if <strong>Img_A</strong> and <strong>Img_B</strong> are the same person, then <span style="font-size: 18px; color: black;"><strong><em>|| </em><em>f (img_A) - f(img_B) || <sup>2</sup></em></strong></span> should be <strong>small</strong></li></span><br>
+	<span style="padding-left: 25px;">if <strong>Img_A</strong> and <strong>Img_B</strong> are the different person, then <span style="font-size: 18px; color: black;"><strong><em>|| </em><em>f (img_A) - f(img_B) || <sup>2</sup></em></strong></span> should be <strong>large</strong></li></span>
+<br>
+So, now that we have all the goals and network ready, we are stuck with the problem of defining the objective function. Here, we are going to use a new function called the Triplet Loss Function:
+<br><span style="text-decoration:underline; font-size: 25px; color: black;">Triplet Loss Function:</span><br>
+One way of making our network learn from a set of images is as follows;
+<br>
+We take three images (triplets) from the database, two of which are of the same person and the other of a different person. From the two similar images, we denote one of them as Anchor Image (A) (in the sense that we are trying to make the network learn this person). We term the other image as Positive Image (P) (denoting a positive result when compared to the Anchor Image). The other different image is termed Negative Image (N) since it is of a different person.
+<br>
+Now, with the three image, we compute <strong><em>d(A, P) & d (A,N)</em></strong>. We are actually trying to find out the degree of difference, once between the anchor and the positive image and again between the anchor and the negative image. And the basic condition we are trying to establish is that:
+<br>
+<span style="font-size: 18px; color: black;"><strong><em>          d (A, P) + </em><em>ω </em></strong><em><strong>≤ d (A, N)</strong> </span> , </em>where <strong>ω</strong> is a <em>hyperparameter </em>that can be adjusted.<br>
+Or, <span style="font-size: 18px; color: black;">   <strong><em>d (A, P)</em><em> -</em></strong><em><strong> d (A, N) + ω ≤ 0</strong></em></span>
+<br>
+<br>
+Or, <span style="font-size: 18px; color: black;">   ||</em><strong><em> </em><em>f (A) - f(P) || <sup>2</sup></em> - <em>|| </em><em>f (A) - f(N) || <sup>2</sup></em> + <em>ω ≤ 0</em></strong></span>
+<br>
+Before moving on, lets discuss about the importance of <strong>ω</strong>. We have,
+<br>
+<span style="font-size: 18px; color: black;"><strong><em>          d (A, P) – d (A, N)  </em></strong><em><strong>≤ 0</strong></span>,     </em>where <strong>ω = 0</strong>, i.e., <em>it is not present</em>.
+<br>
+From the above function, we can arrive at a trivial case, during training, where the difference is equal to 0, when both the "<em>degree of difference</em>" is 0. This implies that the encodings of the three images from the network is all 0's. This case denotes the network is not learning any feature from the images, based on which it can differentiate. In order to avoid this anomaly, we introduced <strong>ω</strong>, so that the value of the parameters does not become zero.
+<br>
+Now, we define our <em>loss function </em><strong>L</strong> as:
+<br>
+<span style="font-size: 18px; color: black"><strong><em>L(A, P, N) = max ( || f (A) - f(P) || <sup>2</sup> - || f (A) - f(N) || <sup>2</sup> + ω, 0)</em></strong></span>
+<br>
+And our <em>cost function</em> <strong>J</strong> as:
+<span style="font-size: 18px; color: black;"><strong>J = ∑<sup>N</sup><sub>i = 1</sub> <em>L (A<sup>(i)</sup>, P<sup>(i)</sup>, N<sup>(i)</sup>)</em></strong></span>
+<br>
+Thus, with the Cost Function <strong>J</strong> defined, we can train over the whole ConvNet using <em>back propagation</em>.
+<br>
+We see that the training of this network demands that we have a few similar images of the same person, in our database. Now, random choice of triplets from the dataset satisfies the triplet loss condition easily, thus the network won’t do much better on other data. So, developing a dataset of triplets that are hard to train on, is essential for the network. We essentially need to find triplets, such that, <strong><em>d (A, P) ≈</em></strong><em><strong> d (A, N)</strong>, </em>so that the network can learn the parameters to a more detailed scale. Generally, large companies train their model on datasets of millions of images, which is impossible for small developers. So, parameters of pre-trained models are made available by some companies which can be implemented in your own model.
+<br><span style="text-decoration:underline; font-size: 25px; color: black;">Another Variation:</span><br>
+One other variation of the Siamese Network that can be used for face verification is to <strong>learn the similarity function</strong>. Here we input the ‘encodings’ of two images from a Siamese Network, and apply, say, <em>Logistic Regression</em> to output 1, if they are the image of the same person, or 0, otherwise.
+<br>
+<img src="https://cdn-images-1.medium.com/max/1200/1*Tf1M29UZ3gCbtFT5PFo-ag.png" alt="siamese_rep1" width="900" height="491" />
+<br>
+This network is interesting, in the sense that, one does not need to organize database of triplets of a large no. of images. We can consider pairs of images. Some pairs are of identical person, some are of different person. We compute the output as:
+<span style="font-size: 18px; color: black;"><strong>y<sub>expected</sub> = ∑<sup>K</sup><sub>i=1</sub>  σ ( W<sub>i</sub> | f (Img_A)<sub>k</sub> - f (Img_B)<sub>k</sub> | + b<sub>i</sub> )</strong></span>
+<br>This is similar to a simple Logistic Regression, applying <em>sigmoid function</em> and containing learnable weights (W<sub>i</sub>) and biases (B<sub>i</sub>).
+<br>
+You can refer to the paper named <em><a href="https://pdfs.semanticscholar.org/dbb1/6032dd8f19bdfd045a1fc0fc51f29c70f70a.pdf">DeepFace</a></em>, for more details about this architecture.
+<br>
+Another important point that can be kept in mind while designing this architecture, is that, we can store the encodings of comparing images (or we can say the Anchor Images), so that we don’t need to recompute it during the testing phase. This reduces a lot of computation cost and increases speed of verification.
+<br>
+These are some of the well-known methods applied to face verification. Hope you enjoyed reading it.
+<br>
+Live long and Code
+
+			  </div>
+
+			 <ul class="comment-list">
+		  		   <h5 class="post-author_head">Written by <a href="#" title="Posts by admin" rel="author">@crazylazylife</a></h5>
+		  		   <li><img src="images/avatar.png" class="img-responsive" alt="">
+		  		   <div class="desc">
+		  		   <p>View all posts by: <a href="#" title="Posts by admin" rel="author">crazylazylife</a></p>
+		  		   </div>
+		  		   <div class="clearfix"></div>
+		  		   </li>
+		  	  </ul>
+			  <div class="content-form">
+					 <h3>Leave a comment</h3>
+					<form>
+						<input type="text" placeholder="Name" required/>
+						<input type="text" placeholder="Email" required/>
+						<input type="text" placeholder="Phone" required/>
+						<textarea placeholder="Message"></textarea>
+						<input type="submit" value="SEND"/>
+				   </form>
+						 </div>
+		  </div>
+			  <div class="clearfix"></div>
+		  </div>
+	  </div>
+
+
+<div class="footer">
+	<div class="container">
+		<p>CRAZYLAZYLIFE Personal Blog . All rights reserved </p>
+	</div>
+</div>

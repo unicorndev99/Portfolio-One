@@ -1,0 +1,389 @@
+
+<!DOCTYPE HTML>
+<html>
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+<title>CrazyLazyLife - Blog</title>
+<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+<link href="css/style.css" rel='stylesheet' type='text/css' />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="object detection algorithm convolutional neural network sliding-window R-CNN YOLO crazylazylife blog" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<link href='http://fonts.googleapis.com/css?family=Oswald:100,400,300,700' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,300italic' rel='stylesheet' type='text/css'>
+<script src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/move-top.js"></script>
+<script type="text/javascript" src="js/easing.js"></script>
+
+<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$(".scroll").click(function(event){
+					event.preventDefault();
+					$('html,body').animate({scrollTop:$(this.hash).offset().top},900);
+				});
+			});
+</script>
+
+</head>
+<body>
+<script src='../../../../ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script><script src="../../../../m.servedby-buysellads.com/monetization.js" type="text/javascript"></script>
+<script>
+(function(){
+	if(typeof _bsa !== 'undefined' && _bsa) {
+  		_bsa.init('flexbar', 'CKYI627U', 'placement:w3layoutscom');
+  	}
+})();
+</script>
+<script>
+(function(){
+if(typeof _bsa !== 'undefined' && _bsa) {
+	_bsa.init('fancybar', 'CKYDL2JN', 'placement:demo');
+}
+})();
+</script>
+<script>
+(function(){
+	if(typeof _bsa !== 'undefined' && _bsa) {
+  		_bsa.init('stickybox', 'CKYI653J', 'placement:w3layoutscom');
+  	}
+})();
+</script>
+<body>
+
+<div class="header">
+	 <div class="container">
+		  <div class="logo">
+			  <a href="blog_index.html"><img src="images/logo.jpg" title="" /></a>
+		  </div>
+
+			 <div class="top-menu">
+				 <div class="search">
+					 <form>
+					 <input type="text" placeholder="" required="">
+					 <input type="submit" value=""/>
+					 </form>
+				 </div>
+				  <span class="menu"> </span>
+				   <ul>
+						<li class="active"><a href="blog_index.html">HOME</a></li>
+						<li><a href="../index.html">MAIN</a></li>
+						<div class="clearfix"> </div>
+				 </ul>
+			 </div>
+			 <div class="clearfix"></div>
+					<script>
+					$("span.menu").click(function(){
+					$(".top-menu ul").slideToggle("slow" , function(){
+					});
+					});
+					</script>
+
+	 </div>
+</div>
+
+<div class="single">
+	 <div class="container">
+		  <div class="col-md-8 single-main">
+			  <div class="single-grid">
+					<img src="http://zoey4ai.com/wp-content/uploads/2018/05/Screenshot-from-2018-05-17-12-43-54.png" alt=""/>
+					<p>
+						Hello Coders,
+<br>
+With the advancement in the world of technology, automation in every aspect of job has gained a lot of attention. Starting from chatbots to self-driving cars, this field of research and application is taking a huge leap. This post shall be on the application of neural network architectures in the field of object detection.  I first thought of writing complete details on the various algorithms available, but that would turn out to be a huge resource sounding more like a boring tutorial lecture. This one will contain a general overview about how three of the most applied algorithms, viz. Sliding Window, R-CNN and YOLO, work. This is going to be a long post, I am sorry.
+<br>
+Given an image, a Convolution Neural Network can classify it among different classes. But the real challenge lies in detecting multiple objects in a single image. When there are multiple objects in a single image, the challenge lies in identifying each object and locating the objects in the image. Earlier, the CNN was being applied on closely cropped images of the objects or on images containing only the objects. But certainly, to train the network for both object detection and localization, we need to train it on images with one or more than one objects and a clear boundary marking its position in the image. Let’s define the output from the network, i.e., what we want the network to predict.
+<br>
+We define out output vector <strong>y<sub>expected</sub></strong>, from the network that is trained to detect N classes of objects, as:
+<br>
+<strong>Y<sub>expected</sub>:</strong>
+<br>
+<strong>[P<sub>c</sub>,</strong>
+<br>
+<strong>L<sub>x</sub>, / B<sub>x</sub></strong>
+<br>
+<strong>L<sub>y</sub>, / B<sub>y</sub></strong>
+<br>
+<strong>L<sub>h</sub>, / B<sub>h</sub></strong>
+<br>
+<strong>L<sub>b</sub>, / B<sub>b</sub></strong>
+<br>
+<strong>C-1,</strong>
+<br>
+<strong>C-2,</strong>
+<br>
+<strong>C-3,</strong>
+<br>
+<strong>...,</strong>
+<br>
+<strong>...,</strong>
+<br>
+<strong>C-N]</strong>
+<br>
+<strong>P<sub>c</sub></strong> →  It defines whether the given image has any object that belongs to at least one of the N classes of image. Thus, it is 1, if there is a vehicle in the image & 0, if the image is just a scenery, or some other image.
+<br>
+<strong>L<sub>x</sub></strong> → It specifies x coordinate of the centre of the bounding box around the object location.
+<br>
+<strong>L<sub>y</sub></strong> → It specifies y coordinate of the centre of the bounding box around the object location.
+<br>
+<strong>L<sub>h</sub></strong> → It specifies the height of the bounding box.
+<br>
+<strong>L<sub>b</sub></strong> → It specifies the breadth of the bounding box.
+<br>
+<strong>C-1, C-2, ...., C-N</strong> → They represent the different classes of object, the network is being trained to recognize. So, for the image of a car, the value of C2 shall be 1, while the other parameters assumes the value 0.
+<br>
+Here is an image, that describes what the network, trained to recognize three class of objects (pedestrians, cars, street signs), shall return:
+<br>
+[gallery ids="1297,1298" type="rectangular"]
+<br>
+We  can see that the probability of a car being present is 1, so <strong>P<sub>c</sub></strong> is 1. It has its boundaries defined by the values by some <strong>B<sub>x</sub>, B<sub>y</sub>, B<sub>h</sub>, B<sub>b</sub></strong>. Next, since its not a 'pedestrian' nor a 'street sign' so the C1 and C3 is 0. While C2, representing a car is 1.
+<br>
+Now, to blindly train the neural network on a set of well-labelled images won’t produce satisfactory results. We need a smarter implementation of algorithms that does some efficient operation on the image and returns better results. First, the <strong>Sliding Window Detection Algorithm</strong>.
+<br>
+<br>
+<span style="text-decoration: underline; font-size: 25px; color : black;">SLIDING WINDOW DETECTION ALGORITHM:</span>
+<br>
+The <strong>Sliding Window Detection Algorithm</strong> is carried out as follows:
+<br>
+<em>First</em>, we train a ConvNet to classify among classes of objects, from closely cropped images of those objects. So, if the network is trying to identify pictures of humans, we are going to train it on images that contain only a person. The extra background of each of the images is removed. So, with given dataset, the output will be <strong>1</strong> if it is the image of a person and <strong>0</strong> otherwise.
+<br>
+<img class=" size-full wp-image-1283 aligncenter" src="https://i.stack.imgur.com/Bvs2W.png" alt="sliding_window" width="518" height="272" />
+<br>
+Next comes the job of detecting the object. For this we choose a square window of some particular size (, smaller in size compared to the size of the image). We now place this window on the input image and crop out that portion of the image, under focus by the window. We feed this cropped image into the ConvNet for classification. Now this window is first placed on the top corner of the image and slid down to the other side with some chosen stride, then again downwards following the same stride. Thus the name Sliding Window Detection.
+<br>
+<img class=" size-full wp-image-1282 aligncenter" src="https://cv-tricks.com/wp-content/uploads/2017/12/Sliding-window.gif.pagespeed.ce.DxcygilfvB.gif" alt="Sliding-window.gif" width="558" height="380" />
+<br>
+Each time, it returns a particular portion of the image to the ConvNet. The ConvNet classifies that portion of the image into the various classes (,if an object is present).
+<br>
+One <strong>downfall of the algorithm</strong> is that often the size of the object in the image might be larger than the size of the window chosen. That would return a negative result, even though the object might be present. One remedy is to use a few window of different sizes. Other is that we resize our image by some scale every time to ensure that the sliding window detects the object at least once. For example, in this image the first smaller window won't be able to detect the car at the right hand side of the image. However, the second and the third ones can detect both the cars.
+<br>
+<img class=" size-full wp-image-1294 aligncenter" src="https://crazycoder2017.files.wordpress.com/2018/06/sliding_windpw_varying_window.png" alt="sliding_windpw_varying_window" width="880" height="338" />
+<br>
+Although this might return correct results, but they are <em>computationally unfavourable</em>. One remedy is to implement Sliding Window Detection Algorithm <em>convolutionally</em>. I am giving the link to the video that gives a great explanation of this implementation.
+<br>
+<a href="https://www.youtube.com/watch?v=mFunGvD5sVc" target="_blank" rel="noopener noreferrer"><strong>Implementing Sliding Window Detection using Convolution</strong></a>
+<br><br><span style="text-decoration: underline;font-size: 25px; color : black;">R-CNN or Region based CNN:</span><br>
+Next comes the R-CNN or the Region Based Convolution Neural Network. It is based on the concept of dividing the image into regions. We start with a ConvNet trained to recognize a no. of classes of objects. Now the algorithm for detection.
+<br>
+It basically has to propose nearly 2k category-independent regions of interest based on selective search. The idea is that these regions might contain various objects of different sizes. This <em>region proposal</em> is achieved by <strong>Segmentation</strong>.
+<br>
+<img class="  wp-image-1284 aligncenter" src="https://cdn-images-1.medium.com/max/1600/1*hf6J8vsX7gmHhZnbPa4y9g.png" alt="segmentation_image" width="687" height="298" />
+<br>
+Example of <em>Segmentation Algorithm</em>
+<br>
+ <br>
+<br>
+These proposed regions of the image are then converted into a format acceptable by the previously trained ConvNet and then fed into it. The ConvNet then performs the task of classification on these focused portions of the image.
+<br>
+Here is the application in R-CNN:
+<br>
+<img class=" size-full wp-image-1285 aligncenter" src="https://cdn-images-1.medium.com/max/1600/1*Sequfmhm-iytuxqBjq3kDg.png" alt="r-cnn_feature_extraction" width="1284" height="463" />
+This is the basic concept. Apart from that, this network also features a <em>SVM (Support Vector Machine)</em> that can perform image classification based on the features extracted by the ConvNet. It also applies a <em>Linear Regression model</em> to fine tune the region bounding box. Quite a lot of stuff.
+<br>
+<br>
+In spite of all these steps, it was still slow in real-time object detection from video footages. To enhance its performance there have been various updates to the version of this algorithm. Starting from <strong>Fast R-CNN to Faster R-CNN, and now Mask R-CNN</strong>.
+<br>
+The <strong>Fast R-CNN</strong> is based on sharing of computation. In other words, like we have done in the convolutional implementation of the sliding window, similarly, here we pass on all the information to the CNN for classification and for bounding box regression. This decreases the total computation cost that was earlier incurred in training over each region separately. Once you understand the convolutional implementation of the Sliding Window Detection Algorithm, you can easily determine the approach being taken here.
+<br>
+The <strong>Faster R-CNN</strong> was an intuitive modification of integrating the process of region proposal into the ConvNet. While the <strong>Mask R-CNN</strong> is an extended implementation of the Faster R-CNN to pixel-level image segmentation.
+<br>
+Here are the links to those papers, in case you need to know more.
+<br>
+<a href="https://arxiv.org/abs/1311.2524" target="_blank" rel="noopener noreferrer">R-CNN</a>
+<br>
+<a href="https://arxiv.org/abs/1504.08083" target="_blank" rel="noopener noreferrer">Fast R-CNN</a>
+<br>
+<a href="https://arxiv.org/abs/1506.01497" target="_blank" rel="noopener noreferrer">Faster R-CNN</a>
+<br>
+<a href="https://arxiv.org/abs/1703.06870" target="_blank" rel="noopener noreferrer">Mask R-CNN</a>
+<br>
+<br><span style="text-decoration: underline;font-size: 25px; color : black;">YOLO OBJECT DETECTION ALGORITHM:</span><br>
+<strong>YOLO</strong> or <strong>You Only Look Once</strong> Algorithm takes a completely different approach from the others. While other algorithms perform classification and localization for each of the proposed regions in the image. YOLO does both the job in a single pass of the image through the network. What it does is that, it divides the image into certain no. of regions and predicts the result for each of the region if the center of some object lies in that region. First let us see what it should output.
+<br>
+<strong>Bounding Box:</strong> We expect the network to predict a bounding box around the object in the image. We define the output as before:
+<<strong>Y<sub>expected</sub>:</strong>
+<strong>[C<sub>s</sub>,</strong>
+<strong>P<sub>c</sub>,</strong>
+<br>
+<strong>L<sub>x</sub>, / B<sub>x</sub></strong>
+<br>
+<strong>L<sub>y</sub>, / B<sub>y</sub></strong>
+<br>
+<strong>L<sub>h</sub>, / B<sub>h</sub></strong>
+<br>
+<strong>L<sub>b</sub>, / B<sub>b</sub></strong>
+<br>
+<strong>C-1,</strong>
+<br>
+<strong>C-2,</strong>
+<br>
+<strong>C-3,</strong>
+<br>
+<strong>...,</strong>
+<br>
+<strong>...,</strong>
+<br>
+<strong>C-N]</strong>
+<br>
+<strong>C<sub>S</sub></strong> → Known as the Confidence Score, it is given by the product of the <em>probability</em> (<strong>P<sub>c</sub></strong>, of the presence of the object) with IoU (result, expexted). I shall define IoU later.
+<br>
+<strong>P<sub>c</sub></strong> → It defines whether the given image has any object that belongs to at least one of the N classes of image. Thus, it is 1, if there is a vehicle in the image & 0, if the image is just a scenery, or some other image.
+<br>
+<strong>L<sub>x</sub></strong> → It specifies x coordinate of the centre of the bounding box around the object location.
+<br>
+<strong>L<sub>y</sub></strong> → It specifies y coordinate of the centre of the bounding box around the object location.
+<br>
+<strong>L<sub>h</sub></strong> → It specifies the height of the bounding box.
+<br>
+<strong>L<sub>b</sub></strong> → It specifies the breadth of the bounding box.
+<br>
+<strong>C-1, C-2, ...., C-N</strong> → They represent the different classes of object, the network is being trained to recognize. So, for the image of a car, the value of C2 shall be 1, while the other parameters assumes the value 0.
+<br>
+Here is just an example what a trained network might be able to return for the given image after dividing it into 3 X 3 grids. This does not show the Confidence Score yet.
+<br>
+<img class="  wp-image-1296 aligncenter" src="https://cdn-images-1.medium.com/max/1600/0*5Pembl6rElHAAUci.jpg" alt="yolo output" width="581" height="247" />
+<br>
+It can be easily understood from the image, how the output varies for each grid cell. The output vales for the bounding boxes are an approximation.
+<br>
+Here is another example. Suppose the network is trained to detect various street signs, applicable to autonomous driving application. The red color box denotes the bounding box (<strong>B<span style="font-size: 13.3333px;">o</span></strong>) predicted by the network and the green color denotes the expected bounding box (<strong>B<sub>e</sub></strong>).
+<br>
+<img class=" size-full wp-image-1286 aligncenter" src="https://www.pyimagesearch.com/wp-content/uploads/2016/09/iou_stop_sign.jpg" alt="bounding_box" width="600" height="450" />
+<br>
+So, what does the algorithm does?
+<br>
+<em>Firstly</em>, as usual, we have a CNN trained to classify object among different classes.
+<br>
+Next, it divides the image into<strong> S X S grid cells or regions</strong>. It trains the network to return a result for each grid cell, if it finds that the centre of some object lies in that grid cell. It can be explained by the following images:
+<br>
+<img class=" size-full wp-image-1287 aligncenter" src="https://cv-tricks.com/wp-content/uploads/2017/12/model2-1024x280.jpg" alt="yolo_image" width="1024" height="280" />
+<br>
+Here we have the given image with three objects. The image is divided into certain no. of cells and the network predicts bounding boxes for the cells that might contain the centre of a object. Notice that the no. of predicted bounding box is very large. How do we choose the correct one? Lets clear the idea on a few topics as we move on:
+<br><span style="text-decoration: underline;font-size: 20px; color : black;">IoU (Intersection Over Union):</span><br>
+So, during training we have two values for the output: First, the truth value or the expected output. Second, the result we get after passing the image through the network
+<br>
+So, the expected output defines some bounding box (<strong>B<sub>e</sub></strong>) for a object, while the network predicts some other bounding box (<strong>B<sub>o</sub></strong>) for the same object.
+<br>
+<strong>IoU</strong> is defined as the ratio of the area covered by the intersection of <strong>B<sub>e</sub> </strong>and <strong>B<sub>o</sub></strong> by the area covers by the union of <strong>B<sub>e</sub></strong> and <strong>B<sub>o</sub></strong>.
+<br>
+<img class="  wp-image-1288 aligncenter" src="https://www.pyimagesearch.com/wp-content/uploads/2016/09/iou_equation.png" alt="iou_simple" width="263" height="205" />
+<br>
+Thus, for an image we might get a lot of bounding boxes predicted by the network. We choose only the results that has the <em>Confidence Score</em> over a certain threshold value. Generally, this threshold value is taken to be 0.6 and above, but it depends on the developers discretion.
+<br>
+Here is an example of its application in detecting cars. Notice how the predicted and the expected bounding boxes almost overlap. Thus, it has a high <strong>IoU</strong>.
+<br>
+<img class="  wp-image-1289 aligncenter" src="https://www.pyimagesearch.com/wp-content/uploads/2016/09/iou_result_03.jpg" alt="iou_applied" width="325" height="267" />
+<br><span style="text-decoration: underline; font-size: 20px; color : black;">Non-Max Suppression:</span><br>
+During application of the network, while performing the detection for objects in the image, the network might return many bounding boxes for an object with confidence score greater than the threshold value. Which one should we choose.
+<br>
+We consider the bounding box with the maximum <b>IoU</b>. Out of all the results we supress the boxes with less <b>IoU</b> and consider the one with the highest <b>Iou</b>. Thus, it is known as Non-Max Suppression.
+<br>
+<img class="  wp-image-1290 aligncenter" src="https://i0.wp.com/pic4.zhimg.com/v2-f02be3c109f164d2b5ab202be1f6a933_r.jpg" alt="non_max_final" width="362" height="209" />
+<br>
+In the above image, say the network predicted three bounding boxes for the same image with IoU surpassing the threshold value (say, 0.65). Non-Max Suppression ensures that the bounding box with the highest IoU (here 0.9) is chosen.
+<br><span style="text-decoration: underline;font-size: 20px; color : black;">Anchor Boxes:</span><br>
+Another important concept is that of the Anchor Boxes. Suppose we have two differently shaped objects with their centre lying in the same grid cell. In that case the network won’t predict correctly for one of the objects. Here we use Anchor Boxes. This is just a concept representing the possible shape or configuration of various objects. So if we have two Anchor Boxes B1 and B2, then we have output:
+<br>
+[gallery ids="1291,1292" type="rectangular"]
+<br>
+In the above example, the first set of prediction is for the Anchor Box B1 that predicts say pedestrians in an image and the second set is for the Anchor Box B2 whcih predicts say cars.
+<br>
+<img class="  wp-image-1293 aligncenter" src="https://cdn-images-1.medium.com/max/1600/0*l65Rq5Oto-h0Dyg0.jpg" alt="anchorbox_applo" width="397" height="326" />
+<br>
+The image above aptly shows  how anchor boxes are useful when the two objects share the same cell for their centre. What would be the output for the cell containing the centres of both the objects:
+<br>
+Y<sub>expected</sub>:
+<strong>[0.82,</strong>
+<br>
+<strong>1,</strong>
+<br>
+<strong>L<sub>x1</sub>, / B<sub>x1</sub></strong>
+<br>
+<strong>L<sub>y1</sub>, / B<sub>y1</sub></strong>
+<br>
+<strong>L<sub>h1</sub>, / B<sub>h1</sub></strong>
+<br>
+<strong>L<sub>b1</sub>, / B<sub>b1</sub></strong>
+<br>
+<strong>0,</strong>
+<br>
+<strong>1,</strong>
+<br>
+<strong>0,</strong>
+<br>
+<strong>0.75,</strong>
+<br>
+<strong>1,</strong>
+<br>
+<strong>L<sub>x2</sub>, / B<sub>x2</sub></strong>
+<br>
+<strong>L<sub>y2</sub>, / B<sub>y2</sub></strong>
+<br>
+<strong>L<sub>h2</sub>, / B<sub>h2</sub></strong>
+<br>
+<strong>L<sub>b2</sub>, / B<sub>b2</sub></strong>
+<br>
+<strong>1,</strong>
+<br>
+<strong>0,</strong>
+<br>
+<strong>0</strong><strong>]</strong>
+<br>
+Thus, suppose we have the CNN trained to classify among three class, viz. pedestrians, cars and street signs. So C1 denotes pedestrians, C2 denotes cars and C3 denotes street signs. There is some <strong>Confidence Score</strong> for both of the bounding boxes B1 and B2. The <strong>Probability</strong> of the existence of both a car and a pedestrian is <strong>1</strong>. The boundaries of their bounding boxes are defined by the parameters <strong>L<sub>xi</sub>, </strong><strong>L<sub>yi</sub>, </strong><strong>L<sub>hi</sub>, </strong><strong>L<sub>bi</sub></strong>. Similarly, for bounding box B1, we expect it to denote a car, so <strong>C2 is 1</strong> and the others are 0. While for the other bounding box B2 we have <strong>C1 is 1</strong> and the others are 0.
+<br>
+Next, we train our network based on the above-mentioned algorithm and obtain the results. Here is how a standard network implementation of YOLO shall look like. Notice that the output is a 7 X 7 X 30 vector. Thus the  image was divided into 7 X 7 = 49 regions and the output vector for each grid cell contains 30 parameters for predictions of various objects.
+<br>
+<img class=" size-full wp-image-1301 aligncenter" src="https://cdn-images-1.medium.com/max/2400/1*9ER4GVUtQGVA2Y0skC9OQQ.png" alt="yolo_arch.png" width="1670" height="762" />
+<br>
+How do we define the loss function during training? This is quite difficult and varies differently with the implementation. However this image provides a general concept about the function:
+<br>
+<img class=" size-full wp-image-1300 aligncenter" src="https://cdn-images-1.medium.com/max/1600/0*asmbNz2iVZ6hmuHu.jpg" alt="yolo_loss_function" width="638" height="359" />
+<br>
+Origianlly YOLO was trained on <strong>PASCAL VOC dataset</strong>, that could classify between 20 classes of objects. This has been proved to be useful for faster object detection. It has been successfully applied in real-time object detection in video footage. Over time, there have been a  lot of up-gradation to the algorithm that led to YOLOv2 or YOLO9000 and similarly YOLO v3. Here are the links to the corresponding papers, in case you are interested.
+<br>
+<a href="https://arxiv.org/abs/1506.02640" target="_blank" rel="noopener noreferrer">YOLO</a>
+<br>
+<a href="https://arxiv.org/abs/1612.08242" target="_blank" rel="noopener noreferrer">YOLO v2</a>
+<br>
+<a href="https://arxiv.org/abs/1804.02767" target="_blank" rel="noopener noreferrer">YOLO v3</a>
+<br>
+Here is a table on the performance of various algorithms on a given dataset:
+<br>
+<img class="  wp-image-1302 aligncenter" src="https://cdn-images-1.medium.com/max/1600/1*TVBjict_R-4XYytl5ALaCg.png" alt="benchmark_object_detection" width="521" height="302" />
+<br>
+Hope you found the information useful. In case of any comment, fell free to express. I am still in the stage of learning these topics and any suggestion for the improvement of the article is welcome.
+<br>
+Live Long and Code
+
+			  </div>
+
+			 <ul class="comment-list">
+		  		   <h5 class="post-author_head">Written by <a href="#" title="Posts by admin" rel="author">@crazylazylife</a></h5>
+		  		   <li><img src="images/avatar.png" class="img-responsive" alt="">
+		  		   <div class="desc">
+		  		   <p>View all posts by: <a href="#" title="Posts by admin" rel="author">crazylazylife</a></p>
+		  		   </div>
+		  		   <div class="clearfix"></div>
+		  		   </li>
+		  	  </ul>
+			  <div class="content-form">
+					 <h3>Leave a comment</h3>
+					<form>
+						<input type="text" placeholder="Name" required/>
+						<input type="text" placeholder="Email" required/>
+						<input type="text" placeholder="Phone" required/>
+						<textarea placeholder="Message"></textarea>
+						<input type="submit" value="SEND"/>
+				   </form>
+						 </div>
+		  </div>
+			  <div class="clearfix"></div>
+		  </div>
+	  </div>
+
+
+<div class="footer">
+	<div class="container">
+		<p>CRAZYLAZYLIFE Personal Blog . All rights reserved </p>
+	</div>
+</div>
